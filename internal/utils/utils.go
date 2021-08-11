@@ -1,5 +1,6 @@
 package utils
 
+// GetSplitSliceBySize This function converts a slice into a slice of slices (chunks of the same size)
 func GetSplitSliceBySize(slice []int, size int) [][]int {
 	if size < 1 {
 		return nil
@@ -18,4 +19,41 @@ func GetSplitSliceBySize(slice []int, size int) [][]int {
 		slices[size-1] = append(slices[size-1], slice[size*count:]...)
 	}
 	return slices
+}
+
+// GetMapWithReversedKey This function converts map ("key-value") into map ("value-key")
+func GetMapWithReversedKey(oldMap map[int]string) map[string]int {
+	newMap := make(map[string]int, len(oldMap))
+	for key, value := range oldMap {
+		if newMap[value] != 0 {
+			panic("This key was already added")
+		}
+		newMap[value] = key
+	}
+	return newMap
+}
+
+// GetFilterSliceByExcludeSlice This function returns the filtered slice without excluded elements
+func GetFilterSliceByExcludeSlice(slice []int, excludedElements []int) []int {
+	if len(excludedElements) < 1 {
+		return slice
+	}
+
+	var newSlice []int
+	for _, value := range slice {
+		if !Include(excludedElements, value) {
+			newSlice = append(newSlice, value)
+		}
+	}
+	return newSlice
+}
+
+// Include This function checks including element in the slice
+func Include(slice []int, elem int) bool {
+	for _, value := range slice {
+		if value == elem {
+			return true
+		}
+	}
+	return false
 }
