@@ -39,21 +39,18 @@ func GetFilterSliceByExcludeSlice(slice []int, excludedElements []int) []int {
 		return slice
 	}
 
+	set := make(map[int]struct{})
 	var newSlice []int
+
+	for _, value := range excludedElements {
+		if _, ok := set[value]; !ok {
+			set[value] = struct{}{}
+		}
+	}
 	for _, value := range slice {
-		if !Include(excludedElements, value) {
+		if _, ok := set[value]; !ok {
 			newSlice = append(newSlice, value)
 		}
 	}
 	return newSlice
-}
-
-// Include This function checks including element in the slice
-func Include(slice []int, elem int) bool {
-	for _, value := range slice {
-		if value == elem {
-			return true
-		}
-	}
-	return false
 }
