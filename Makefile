@@ -36,4 +36,4 @@ clean:
 ## test: tests
 test:
 	@echo "Test"
-	@go test -v ./...
+	@go test ./internal/models

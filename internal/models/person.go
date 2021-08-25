@@ -1,6 +1,9 @@
 package person
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Person struct {
 	Id         uint64
@@ -11,4 +14,13 @@ type Person struct {
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	DeletedAt  time.Time
+}
+
+func (person Person) String() string {
+	return fmt.Sprintf("Id: %d, Name: %s %s %s, created at: %s",
+		person.Id,
+		person.LastName,
+		person.FirstName,
+		person.MiddleName,
+		person.CreatedAt.String())
 }
