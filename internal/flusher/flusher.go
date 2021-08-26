@@ -1,6 +1,8 @@
 package flusher
 
 import (
+	"log"
+
 	models "github.com/ozonva/ova-person-api/internal/models"
 	repo   "github.com/ozonva/ova-person-api/internal/repo"
 	utils  "github.com/ozonva/ova-person-api/internal/utils"
@@ -16,8 +18,22 @@ type flusher struct {
 	personRepo repo.Repo
 }
 
-func (f flusher) Flush(persons []interface{}) []interface{} {
-	panic("implement me")
+func (f flusher) Flush(persons []models.Person) []models.Person {
+	if f.chunkSize < 1 {
+		log.Fatalf("ChunkSize must be positive: %v\n", f.chunkSize)
+		return persons
+	}
+	batches := utils.SplitToBulks(persons, uint(f.chunkSize))
+
+	var unsaved []models.Person
+	for _, batch := range batches {
+		if result := f.personRepo.AddPersons(batch); result != nil {
+			log.Printf("Error when persons weren't saved: %v\n", result)
+			unsaved = append(unsaved, batch...)
+		}
+	}
+
+	return unsaved
 }
 
 // NewFlusher возвращает Flusher с поддержкой батчевого сохранения
