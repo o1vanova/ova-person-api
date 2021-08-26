@@ -37,3 +37,4 @@ clean:
 test:
 	@echo "Test"
 	@go test ./internal/models
+	@go test ./internal/utils
