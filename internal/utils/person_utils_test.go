@@ -1,4 +1,4 @@
-package person_utils
+package utils
 
 import (
 	"testing"

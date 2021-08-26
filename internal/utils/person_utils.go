@@ -1,10 +1,10 @@
-package person_utils
+package utils
 
 import (
 	. "github.com/ozonva/ova-person-api/internal/models"
 )
 
-// GetMapFromSlice Get converted slice from structure to map,
+// GetMapFromSlice gets converted slice from structure to map
 func GetMapFromSlice(persons []Person) (map[uint64]Person, error) {
 	set := make(map[uint64]Person)
 	for _, person := range persons {
@@ -13,7 +13,7 @@ func GetMapFromSlice(persons []Person) (map[uint64]Person, error) {
 	return set, nil
 }
 
-// SplitToBulks Get batches of slice by butchSize,
+// SplitToBulks gets batches of slice by butchSize
 func SplitToBulks(persons []Person, butchSize uint) [][]Person {
 	if butchSize < 1 {
 		return nil
