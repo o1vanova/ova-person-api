@@ -2,7 +2,8 @@ package flusher
 
 import (
 	models "github.com/ozonva/ova-person-api/internal/models"
-	repo "github.com/ozonva/ova-person-api/internal/repo"
+	repo   "github.com/ozonva/ova-person-api/internal/repo"
+	utils  "github.com/ozonva/ova-person-api/internal/utils"
 )
 
 // Flusher - интерфейс для сброса задач в хранилище
@@ -21,7 +22,7 @@ func (f flusher) Flush(persons []interface{}) []interface{} {
 
 // NewFlusher возвращает Flusher с поддержкой батчевого сохранения
 func NewFlusher(
-	chunkSize int,
+	chunkSize  int,
 	personRepo repo.Repo,
 ) Flusher {
 	return &flusher{
