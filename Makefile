@@ -30,6 +30,7 @@ lint:
 ## clean: cleans the binary
 clean:
 	@echo "Cleaning..."
+	@go clean -modcache
 	@go clean -i
 
 .PHONY: test
