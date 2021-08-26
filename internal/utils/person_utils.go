@@ -13,7 +13,6 @@ func GetMapFromSlice(persons []Person) (map[uint64]Person, error) {
 	return set, nil
 }
 
-/*
 // SplitToBulks Get batches of slice by butchSize,
 func SplitToBulks(persons []Person, butchSize uint) [][]Person {
 	if butchSize < 1 {
@@ -22,7 +21,7 @@ func SplitToBulks(persons []Person, butchSize uint) [][]Person {
 
 	len := uint(len(persons))
 	count := len / butchSize
-	batches := make([][]int, 0, butchSize)
+	batches := make([][]Person, 0, butchSize)
 
 	for i := uint(0); i < butchSize; i++ {
 		from := i * count
@@ -33,4 +32,4 @@ func SplitToBulks(persons []Person, butchSize uint) [][]Person {
 		batches[butchSize-1] = append(batches[butchSize-1], persons[butchSize*count:]...)
 	}
 	return batches
-}*/
+}

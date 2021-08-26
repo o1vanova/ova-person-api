@@ -1,7 +1,6 @@
 package person_utils
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -9,14 +8,55 @@ import (
 )
 
 func TestGetMapFromSlice(t *testing.T) {
+	type Case struct {
+		in  uint64
+		out string
+	}
+	var cases []Case
+	persons := getTestPersons()
+
+	for _, person := range persons {
+		cases = append(cases, Case{person.Id, person.String()})
+	}
+
+	personMap, _ := GetMapFromSlice(persons)
+	for _, c := range cases {
+		result := personMap[c.in].String()
+		if result != c.out {
+			t.Errorf("expected: %s, result: %s", c.out, result)
+		}
+	}
+}
+
+func TestSplitToBulks(t *testing.T) {
+	persons := getTestPersons()
+	cases := []struct {
+		in  [][]Person
+		out int
+	}{
+		{SplitToBulks(persons, 2), 2},
+		{SplitToBulks(persons, 3), 3},
+	}
+
+	for _, c := range cases {
+		result := len(c.in)
+		if result != c.out {
+			t.Errorf("expected: %d, result: %d", c.out, result)
+		}
+	}
+}
+
+func getTestPersons() []Person {
 	now := time.Now()
 	const (
 		person1Id = iota + 10
 		person2Id
+		person3Id
 		user1Id = iota + 100
 		user2Id
+		user3Id
 	)
-	persons := []Person {
+	return []Person {
 		Person{
 			Id:         person1Id,
 			UserId:     user1Id,
@@ -35,20 +75,14 @@ func TestGetMapFromSlice(t *testing.T) {
 			CreatedAt:  now,
 			UpdatedAt:  now,
 		},
-	}
-	cases := []struct {
-		in  uint64
-		out string
-	}{
-		{person1Id, fmt.Sprintf("Id: %d, Name: Ivanov Ivan Ivanovich, created at: %s", person1Id, now.String())},
-		{person2Id, fmt.Sprintf("Id: %d, Name: Petrov Petr Petrovich, created at: %s", person2Id, now.String())},
-	}
-
-	personMap, _ := GetMapFromSlice(persons)
-	for _, c := range cases {
-		result := personMap[c.in].String()
-		if result != c.out {
-			t.Errorf("expected: %s, result: %s", c.out, result)
-		}
+		Person{
+			Id:         person3Id,
+			UserId:     user3Id,
+			FirstName:  "Roman",
+			LastName:   "Romanov",
+			MiddleName: "Romanich",
+			CreatedAt:  now,
+			UpdatedAt:  now,
+		},
 	}
 }

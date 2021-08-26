@@ -11,8 +11,6 @@ func TestPersonString(t *testing.T) {
 	const (
 		person1Id = iota + 1
 		person2Id
-	)
-	const (
 		user1Id = iota + 1
 		user2Id
 	)
