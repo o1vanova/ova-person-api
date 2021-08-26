@@ -56,7 +56,7 @@ func getTestPersons() []Person {
 		user2Id
 		user3Id
 	)
-	return []Person {
+	return []Person{
 		Person{
 			Id:         person1Id,
 			UserId:     user1Id,
