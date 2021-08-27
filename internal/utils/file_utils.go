@@ -19,7 +19,6 @@ func OpenAndCloseFileInLoop(countLoop int, configPath string) {
 		if err != nil {
 			log.Fatalf("%s\n", err)
 			panic(err)
-			return
 		}
 	}
 }
@@ -43,7 +42,7 @@ func UpdateConfig(path string) error {
 		log.Fatal("Error when opening file: ", err)
 	}
 
-	var lines map[string] interface{}
+	var lines map[string]interface{}
 	err = json.Unmarshal(content, &lines)
 	if err != nil {
 		log.Fatal("Error when parsing: ", err)
