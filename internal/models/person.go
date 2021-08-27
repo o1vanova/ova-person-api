@@ -17,10 +17,23 @@ type Person struct {
 }
 
 func (person Person) String() string {
-	return fmt.Sprintf("Id: %d, Name: %s %s %s, created at: %s",
+	return fmt.Sprintf("Id: %d, Name: %s %s %s",
 		person.Id,
 		person.LastName,
 		person.FirstName,
-		person.MiddleName,
-		person.CreatedAt.String())
+		person.MiddleName)
+}
+
+func NewPerson(personId uint64, userId uint64, firstName string, lastName string, middleName string) Person {
+	now := time.Now()
+	return Person{
+		Id:         personId,
+		UserId:     userId,
+		FirstName:  firstName,
+		LastName:   lastName,
+		MiddleName: middleName,
+		CreatedAt:  now,
+		UpdatedAt:  now,
+		DeletedAt:  time.Time{},
+	}
 }

@@ -2,9 +2,8 @@ package utils
 
 import (
 	"testing"
-	"time"
 
-	. "github.com/ozonva/ova-person-api/internal/models"
+	models "github.com/ozonva/ova-person-api/internal/models"
 )
 
 func TestGetMapFromSlice(t *testing.T) {
@@ -31,7 +30,7 @@ func TestGetMapFromSlice(t *testing.T) {
 func TestSplitToBulks(t *testing.T) {
 	persons := getTestPersons()
 	cases := []struct {
-		in  [][]Person
+		in  [][]models.Person
 		out int
 	}{
 		{SplitToBulks(persons, 2), 2},
@@ -46,8 +45,7 @@ func TestSplitToBulks(t *testing.T) {
 	}
 }
 
-func getTestPersons() []Person {
-	now := time.Now()
+func getTestPersons() []models.Person {
 	const (
 		person1Id = iota + 10
 		person2Id
@@ -56,33 +54,9 @@ func getTestPersons() []Person {
 		user2Id
 		user3Id
 	)
-	return []Person{
-		Person{
-			Id:         person1Id,
-			UserId:     user1Id,
-			FirstName:  "Ivan",
-			LastName:   "Ivanov",
-			MiddleName: "Ivanovich",
-			CreatedAt:  now,
-			UpdatedAt:  now,
-		},
-		Person{
-			Id:         person2Id,
-			UserId:     user2Id,
-			FirstName:  "Petr",
-			LastName:   "Petrov",
-			MiddleName: "Petrovich",
-			CreatedAt:  now,
-			UpdatedAt:  now,
-		},
-		Person{
-			Id:         person3Id,
-			UserId:     user3Id,
-			FirstName:  "Roman",
-			LastName:   "Romanov",
-			MiddleName: "Romanich",
-			CreatedAt:  now,
-			UpdatedAt:  now,
-		},
+	return []models.Person{
+		models.NewPerson(person1Id, user1Id, "Ivan", "Ivanov", "Ivanovich"),
+		models.NewPerson(person2Id, user2Id, "Petr", "Petrov", "Petrovich"),
+		models.NewPerson(person3Id, user3Id, "Roman", "Romanov", "Romanovich"),
 	}
 }
