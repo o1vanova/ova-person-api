@@ -20,10 +20,10 @@ type flusher struct {
 
 func (f flusher) Flush(persons []models.Person) []models.Person {
 	if f.chunkSize < 1 {
-		log.Fatalf("ChunkSize must be positive: %v\n", f.chunkSize)
+		log.Printf("ChunkSize must be positive: %v\n", f.chunkSize)
 		return persons
 	}
-	batches := utils.SplitToBulks(persons, uint(f.chunkSize))
+	batches := utils.SplitToBulks(persons, f.chunkSize)
 
 	var unsaved []models.Person
 	for _, batch := range batches {
@@ -33,7 +33,11 @@ func (f flusher) Flush(persons []models.Person) []models.Person {
 		}
 	}
 
-	return unsaved
+	if len(unsaved) > 0 {
+		return unsaved
+	}
+
+	return nil
 }
 
 // NewFlusher возвращает Flusher с поддержкой батчевого сохранения

@@ -34,6 +34,5 @@ func NewPerson(personId uint64, userId uint64, firstName string, lastName string
 		MiddleName: middleName,
 		CreatedAt:  now,
 		UpdatedAt:  now,
-		DeletedAt:  time.Time{},
 	}
 }
