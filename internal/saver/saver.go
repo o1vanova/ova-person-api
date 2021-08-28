@@ -71,7 +71,7 @@ func (job *saveJob) init() {
 	for {
 		select {
 		case result := <-job.GetChanelReadOnly():
-			job.Save(result)
+			job.saveInCash(result)
 		case <-job.ticker.C:
 			job.saveInStorage()
 		}
