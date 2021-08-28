@@ -7,6 +7,7 @@ import (
 
 	"github.com/ozonva/ova-person-api/internal/flusher"
 	models "github.com/ozonva/ova-person-api/internal/models"
+	utils "github.com/ozonva/ova-person-api/internal/utils"
 )
 
 type Saver interface {
@@ -70,14 +71,17 @@ func (job *saveJob) init() {
 	for {
 		select {
 		case result := <-job.GetChanelReadOnly():
-			log.Println("Got person: ", result.String())
+			job.Save(result)
 		case <-job.ticker.C:
-			log.Print(".")
+			job.saveInStorage()
 		}
 	}
 }
 
 func (job *saveJob) saveInCash(person models.Person) {
+	job.mtxBuffer.Lock()
+	defer job.mtxBuffer.Unlock()
+
 	if !job.isBuffLocked() {
 		job.buffer = append(job.buffer, person)
 	}
@@ -92,8 +96,11 @@ func (job *saveJob) saveInStorage() {
 	}
 
 	unsavedPersons := job.flusher.Flush(job.buffer)
-	for _, unsavedPerson := range unsavedPersons {
-		job.saveInCash(unsavedPerson)
+	if len(unsavedPersons) == 0 {
+		job.buffer = nil
+	} else {
+		result := utils.GetPersonsWithoutExcludedPersons(job.buffer, unsavedPersons)
+		job.buffer = result
 	}
 }
 

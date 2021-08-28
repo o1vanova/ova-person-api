@@ -45,6 +45,30 @@ func TestSplitToBulks(t *testing.T) {
 	}
 }
 
+func TestGetPersonsWithoutExcludedPersons(t *testing.T) {
+	persons := getTestPersons()
+	cases := []struct {
+		in  []models.Person
+		out []models.Person
+	}{
+		{GetPersonsWithoutExcludedPersons(persons, persons[:1]), persons[1:]},
+		{GetPersonsWithoutExcludedPersons(persons[1:], persons[:2]), persons[2:]},
+	}
+
+	for _, c := range cases {
+		if len(c.in) != len(c.out) {
+			t.Errorf("expected len: %d, result len: %d", len(c.out), len(c.in))
+			return
+		}
+
+		for key, person := range c.in {
+			if person.String() != c.out[key].String() {
+				t.Errorf("expected: %v, result: %v", c.out[key].String(), person.String())
+			}
+		}
+	}
+}
+
 func getTestPersons() []models.Person {
 	const (
 		person1Id = iota + 10
