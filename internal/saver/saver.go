@@ -11,56 +11,96 @@ import (
 
 type Saver interface {
 	Save(person models.Person) // заменить на свою сущность
-	Init(tick int)
 	Close()
 }
 
-type SaveJob struct {
-	MtxBuffer *sync.Mutex
-	Buffer    []models.Person
-	Capacity  uint
-	Flusher   flusher.Flusher
-	Chanel    chan models.Person
+type saveJob struct {
+	mtxBuffer *sync.Mutex
+	buffer    []models.Person
+	capacity  uint
+	flusher   flusher.Flusher
+	channel   chan models.Person
+	ticker    time.Ticker
 }
 
 // NewSaver возвращает Saver с поддержкой переодического сохранения
 func NewSaver(
 	capacity uint,
 	flusher flusher.Flusher,
+	tick uint,
 ) Saver {
-	job := SaveJob{
-		MtxBuffer: new(sync.Mutex),
-		Buffer:    make([]models.Person, capacity),
-		Capacity:  capacity,
-		Flusher:   flusher,
-		Chanel:    make(chan models.Person),
+	if tick == 0 {
+		panic("Time must be more than zero")
 	}
+
+	ticker := time.NewTicker(time.Duration(tick) * time.Second)
+	job := saveJob{
+		mtxBuffer: new(sync.Mutex),
+		buffer:    make([]models.Person, capacity),
+		capacity:  capacity,
+		flusher:   flusher,
+		channel:   make(chan models.Person),
+		ticker:    *ticker,
+	}
+
+	go job.init()
 	return &job
 }
 
-func (job *SaveJob) GetChanelReadOnly() <-chan models.Person {
-	return job.Chanel
+func (job *saveJob) GetChanelReadOnly() <-chan models.Person {
+	return job.channel
 }
 
-func (job *SaveJob) Init(tick int) {
-	if tick < 1 {
-		panic("Time must be positive number")
-	}
-	ticker := time.NewTicker(time.Duration(tick) * time.Second)
+func (job *saveJob) Close() {
+	log.Println("User wants to close")
+	job.ticker.Stop()
+	close(job.channel)
+	job.saveInStorage()
+}
 
+func (job *saveJob) Save(person models.Person) {
+	log.Println("User wants to save person: ", person.String())
+	if job.isBuffLocked() {
+		job.saveInStorage()
+	}
+	job.saveInCash(person)
+}
+
+func (job *saveJob) init() {
 	for {
 		select {
 		case result := <-job.GetChanelReadOnly():
-			log.Printf("\nGot person: %v\n", result.String())
-		case <-ticker.C:
+			log.Println("Got person: ", result.String())
+		case <-job.ticker.C:
 			log.Print(".")
 		}
 	}
 }
 
-func (job *SaveJob) Close() {
-	close(job.Chanel)
+func (job *saveJob) saveInCash(person models.Person) {
+	if !job.isBuffLocked() {
+		job.buffer = append(job.buffer, person)
+	}
 }
 
-func (job *SaveJob) Save(person models.Person) {
+func (job *saveJob) saveInStorage() {
+	job.mtxBuffer.Lock()
+	defer job.mtxBuffer.Unlock()
+
+	if len(job.buffer) == 0 {
+		return
+	}
+
+	unsavedPersons := job.flusher.Flush(job.buffer)
+	for _, unsavedPerson := range unsavedPersons {
+		job.saveInCash(unsavedPerson)
+	}
+}
+
+func (job *saveJob) isBuffLocked() bool {
+	result := cap(job.buffer) == len(job.buffer)
+	if result {
+		log.Println("Buffer is full! Clear, please")
+	}
+	return result
 }
