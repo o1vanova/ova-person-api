@@ -22,7 +22,7 @@ var _ = Describe("Test flusher", func() {
 		mockCtrl    *gomock.Controller
 		mockRepo    *mocks.MockRepo
 		testFlusher flusher.Flusher
-		persons		[]models.Person
+		persons     []models.Person
 	)
 
 	AfterEach(func() {
