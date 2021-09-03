@@ -1,12 +1,10 @@
 BUILDPATH    =$(CURDIR)
-MAIN_NAME    =${BUILDPATH}/cmd/ova-person-api/main.go
+MAIN_NAME    =$(BUILDPATH)/cmd/ova-person-api/main.go
 GOBIN        =$(CURDIR)/bin
 PROJECT_NAME = ova-person-api
 
-.PHONY: deps
-deps: install-go-deps
-
 .PHONY: install-go-deps
+## install dependencies
 install-go-deps:
 	@echo "Installing dependencies..."
 	@go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
@@ -14,31 +12,35 @@ install-go-deps:
 	@go get -u github.com/golang/protobuf/protoc-gen-go
 	@go get -u google.golang.org/grpc
 	@go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
+	@go get -u github.com/golang/mock
+	@go get -u github.com/onsi/ginkgo
+	@go get -u github.com/onsi/gomega
 	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 	@go mod download
 
 .PHONY: generate
+## generate proto files
 generate:
-	@echo "Installing dependencies..."
-	@protoc -I ${CURDIR}/api \
-		--go_out=${CURDIR}/pkg --go_opt=paths=source_relative \
-		--go-grpc_out=${CURDIR}/pkg --go-grpc_opt=paths=source_relative \
-        --grpc-gateway_out=${CURDIR}/pkg --grpc-gateway_opt paths=source_relative \
-		${CURDIR}/api/*.proto
+	@echo "Generating protos..."
+	@protoc -I $(CURDIR)/api \
+		--go_out=$(CURDIR)/pkg --go_opt=paths=source_relative \
+        --go-grpc_out=$(CURDIR)/pkg --go-grpc_opt=paths=source_relative \
+        --grpc-gateway_out=$(CURDIR)/pkg --grpc-gateway_opt paths=source_relative \
+        $(CURDIR)/api/*.proto
 
 .PHONY: build
 ## build: build the application
 build: clean
 	@echo "Building..."
 	@go mod tidy
-	@go mod download && go build -o ${GOBIN}/${PROJECT_NAME} ${MAIN_NAME}
+	@go mod download && go build -o $(GOBIN)/$(PROJECT_NAME) $(MAIN_NAME)
 
 .PHONY: run
 ## run: runs go run main.go
 run:
 	@echo "Running..."
-	@go run ${MAIN_NAME}
+	@go run $(MAIN_NAME)
 
 .PHONY: format
 ## format: format the code of project
