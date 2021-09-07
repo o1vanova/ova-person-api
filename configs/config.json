@@ -1,4 +1,5 @@
 {
   "host": "localhost",
-  "port": 5656
+  "port": 5656,
+  "url": "jdbc:postgresql://localhost:5432/postgres"
 }
