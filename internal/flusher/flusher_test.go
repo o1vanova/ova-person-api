@@ -48,7 +48,7 @@ var _ = Describe("Test flusher", func() {
 				list := persons[:1]
 				ctx := context.Background()
 				mockRepo.EXPECT().AddPersons(ctx, list).Return(nil)
-				Expect(testFlusher.Flush(list)).To(BeNil())
+				Expect(testFlusher.Flush(ctx, list)).To(BeNil())
 			})
 		})
 	})
