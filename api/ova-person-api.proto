@@ -1,17 +1,16 @@
 syntax = "proto3";
 
-//import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-package person.api;
+package api_pb;
 
 option go_package = "github.com/ozonva/ova-person-api/pkg/ova-person-api;ova_person_api";
 
 service PersonApiService {
   rpc CreatePerson(CreatePersonRequest) returns (google.protobuf.Empty) {};
   rpc DescribePerson(DescribePersonRequest) returns (google.protobuf.Empty) {};
-  rpc ListPersons(google.protobuf.Empty) returns (ListPersonsResponse) {};
+  rpc ListPersons(ListPersonsRequest) returns (ListPersonsResponse) {};
   rpc RemovePerson(RemovePersonRequest) returns (google.protobuf.Empty) {};
 }
 
@@ -32,6 +31,10 @@ message DescribePersonRequest {
 
 message RemovePersonRequest {
   uint64 personId = 1;
+}
+
+message ListPersonsRequest {
+  bool isActual = 1;
 }
 
 message ListPersonsResponse {
