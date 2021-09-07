@@ -7,8 +7,8 @@ import (
 	models "github.com/ozonva/ova-person-api/internal/models"
 )
 
-// Repo - интерфейс хранилища для сущности Entity
-type Repo interface {
+// PersonRepo - интерфейс хранилища для сущности Entity
+type PersonRepo interface {
 	AddPersons(context context.Context, persons []models.Person) (uint64, error)
 	ListPersons(context context.Context, limit, offset uint64) ([]models.Person, error)
 	DescribePerson(context context.Context, personId uint64) (*models.Person, error)
@@ -30,6 +30,6 @@ func (repo repository) DescribePerson(context context.Context, personId uint64) 
 	panic("implement me")
 }
 
-func NewContext(db sqlx.DB) Repo {
+func NewContext(db sqlx.DB) PersonRepo {
 	return &repository{db: db}
 }

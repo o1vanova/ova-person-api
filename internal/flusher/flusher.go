@@ -16,7 +16,7 @@ type Flusher interface {
 
 type flusher struct {
 	chunkSize  int
-	personRepo repo.Repo
+	personRepo repo.PersonRepo
 }
 
 func (f flusher) Flush(ctx context.Context, persons []models.Person) []models.Person {
@@ -44,7 +44,7 @@ func (f flusher) Flush(ctx context.Context, persons []models.Person) []models.Pe
 // NewFlusher возвращает Flusher с поддержкой батчевого сохранения
 func NewFlusher(
 	chunkSize int,
-	personRepo repo.Repo,
+	personRepo repo.PersonRepo,
 ) Flusher {
 	return &flusher{
 		chunkSize:  chunkSize,

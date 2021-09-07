@@ -21,7 +21,7 @@ var _ = Describe("Test flusher", func() {
 	)
 	var (
 		mockCtrl    *gomock.Controller
-		mockRepo    *mocks.MockRepo
+		mockRepo    *mocks.MockPersonRepo
 		testFlusher flusher.Flusher
 		persons     []models.Person
 	)
@@ -32,7 +32,7 @@ var _ = Describe("Test flusher", func() {
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
-		mockRepo = mocks.NewMockRepo(mockCtrl)
+		mockRepo = mocks.NewMockPersonRepo(mockCtrl)
 		testFlusher = flusher.NewFlusher(3, mockRepo)
 
 		persons = []models.Person{
