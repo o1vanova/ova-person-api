@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -35,45 +36,46 @@ func (m *MockRepo) EXPECT() *MockRepoMockRecorder {
 }
 
 // AddPersons mocks base method.
-func (m *MockRepo) AddPersons(arg0 []person.Person) error {
+func (m *MockRepo) AddPersons(arg0 context.Context, arg1 []person.Person) (uint64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddPersons", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "AddPersons", arg0, arg1)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // AddPersons indicates an expected call of AddPersons.
-func (mr *MockRepoMockRecorder) AddPersons(arg0 interface{}) *gomock.Call {
+func (mr *MockRepoMockRecorder) AddPersons(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddPersons", reflect.TypeOf((*MockRepo)(nil).AddPersons), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddPersons", reflect.TypeOf((*MockRepo)(nil).AddPersons), arg0, arg1)
 }
 
 // DescribePerson mocks base method.
-func (m *MockRepo) DescribePerson(arg0 uint64) (*person.Person, error) {
+func (m *MockRepo) DescribePerson(arg0 context.Context, arg1 uint64) (*person.Person, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DescribePerson", arg0)
+	ret := m.ctrl.Call(m, "DescribePerson", arg0, arg1)
 	ret0, _ := ret[0].(*person.Person)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // DescribePerson indicates an expected call of DescribePerson.
-func (mr *MockRepoMockRecorder) DescribePerson(arg0 interface{}) *gomock.Call {
+func (mr *MockRepoMockRecorder) DescribePerson(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePerson", reflect.TypeOf((*MockRepo)(nil).DescribePerson), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePerson", reflect.TypeOf((*MockRepo)(nil).DescribePerson), arg0, arg1)
 }
 
 // ListPersons mocks base method.
-func (m *MockRepo) ListPersons(arg0, arg1 uint64) ([]person.Person, error) {
+func (m *MockRepo) ListPersons(arg0 context.Context, arg1, arg2 uint64) ([]person.Person, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListPersons", arg0, arg1)
+	ret := m.ctrl.Call(m, "ListPersons", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]person.Person)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListPersons indicates an expected call of ListPersons.
-func (mr *MockRepoMockRecorder) ListPersons(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockRepoMockRecorder) ListPersons(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPersons", reflect.TypeOf((*MockRepo)(nil).ListPersons), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPersons", reflect.TypeOf((*MockRepo)(nil).ListPersons), arg0, arg1, arg2)
 }
