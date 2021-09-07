@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package api_pb;
+
+option go_package = "github.com/ozonva/ova-person-api/pkg/ova-person-api;ova_person_api";
+
+service PersonApiService {
+  rpc CreatePerson(CreatePersonRequest) returns (CreatePersonResponse) {};
+  rpc DescribePerson(DescribePersonRequest) returns (DescribePersonResponse) {};
+  rpc ListPersons(ListPersonsRequest) returns (ListPersonsResponse) {};
+  rpc RemovePerson(RemovePersonRequest) returns (RemovePersonResponse) {};
+}
+
+message CreatePersonRequest {
+  uint64 personId   = 1;
+  uint64 userId     = 2;
+  string firstName  = 3;
+  string lastName   = 4;
+  string middleName = 5;
+  google.protobuf.Timestamp createdAt = 6;
+  google.protobuf.Timestamp updatedAt = 7;
+  google.protobuf.Timestamp deletedAt = 8;
+}
+
+message DescribePersonRequest {
+  uint64 personId = 1;
+}
+
+message RemovePersonRequest {
+  uint64 personId = 1;
+}
+
+message ListPersonsRequest {
+}
+
+message CreatePersonResponse {
+  uint64 personId = 1;
+}
+
+message DescribePersonResponse {
+  CreatePersonRequest person = 1;
+}
+
+message RemovePersonResponse {
+  uint64 personId = 1;
+}
+
+message ListPersonsResponse {
+  repeated CreatePersonRequest persons = 1;
+}

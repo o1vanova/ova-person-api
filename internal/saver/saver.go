@@ -7,11 +7,10 @@ import (
 
 	"github.com/ozonva/ova-person-api/internal/flusher"
 	models "github.com/ozonva/ova-person-api/internal/models"
-	utils "github.com/ozonva/ova-person-api/internal/utils"
 )
 
 type Saver interface {
-	Save(person models.Person) // заменить на свою сущность
+	Save(person models.Person)
 	Close()
 }
 
@@ -99,8 +98,7 @@ func (job *saveJob) saveInStorage() {
 	if len(unsavedPersons) == 0 {
 		job.buffer = nil
 	} else {
-		result := utils.GetPersonsWithoutExcludedPersons(job.buffer, unsavedPersons)
-		job.buffer = result
+		job.buffer = unsavedPersons
 	}
 }
 
