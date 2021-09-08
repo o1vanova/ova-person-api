@@ -28,9 +28,11 @@ func (f flusher) Flush(ctx context.Context, persons []models.Person) []models.Pe
 
 	var unsaved []models.Person
 	for _, batch := range batches {
-		if personId, err := f.personRepo.AddPersons(ctx, batch); err != nil {
-			log.Printf("Error when persons weren't saved: %v\n", personId)
-			unsaved = append(unsaved, batch...)
+		for _, person := range batch {
+			if personId, err := f.personRepo.AddPerson(ctx, person); err != nil {
+				log.Printf("Error when persons weren't saved: %v\n", personId)
+				unsaved = append(unsaved, batch...)
+			}
 		}
 	}
 

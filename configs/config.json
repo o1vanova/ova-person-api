@@ -1,5 +1,5 @@
 {
   "host": "localhost",
   "port": 5656,
-  "url": "jdbc:postgresql://localhost:5432/postgres"
+  "dsn": "postgres://test:ozon@localhost:5432/exampledb?sslmode=verify-full"
 }

@@ -2,6 +2,7 @@ package flusher_test
 
 import (
 	"context"
+
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -23,6 +24,7 @@ var _ = Describe("Test flusher", func() {
 		mockCtrl    *gomock.Controller
 		mockRepo    *mocks.MockPersonRepo
 		testFlusher flusher.Flusher
+		context     context.Context
 		persons     []models.Person
 	)
 
@@ -34,6 +36,7 @@ var _ = Describe("Test flusher", func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockRepo = mocks.NewMockPersonRepo(mockCtrl)
 		testFlusher = flusher.NewFlusher(3, mockRepo)
+		context = context
 
 		persons = []models.Person{
 			models.NewPerson(person1Id, user1Id, "Ivan", "Ivanov", "Ivanovich"),
@@ -42,13 +45,16 @@ var _ = Describe("Test flusher", func() {
 		}
 	})
 
+	AfterEach(func() {
+		mockCtrl.Finish()
+	})
+
 	Describe("Person storage", func() {
 		Context("CRUD", func() {
-			It("AddPersons", func() {
+			It("AddPerson", func() {
 				list := persons[:1]
-				ctx := context.Background()
-				mockRepo.EXPECT().AddPersons(ctx, list).Return(nil)
-				Expect(testFlusher.Flush(ctx, list)).To(BeNil())
+				mockRepo.EXPECT().AddPerson(context, persons[0]).Return(uint64(person1Id), nil)
+				Expect(testFlusher.Flush(context, list)).To(BeNil())
 			})
 		})
 	})

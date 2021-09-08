@@ -35,19 +35,19 @@ func (m *MockPersonRepo) EXPECT() *MockPersonRepoMockRecorder {
 	return m.recorder
 }
 
-// AddPersons mocks base method.
-func (m *MockPersonRepo) AddPersons(arg0 context.Context, arg1 []person.Person) (uint64, error) {
+// AddPerson mocks base method.
+func (m *MockPersonRepo) AddPerson(arg0 context.Context, arg1 person.Person) (uint64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddPersons", arg0, arg1)
+	ret := m.ctrl.Call(m, "AddPerson", arg0, arg1)
 	ret0, _ := ret[0].(uint64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// AddPersons indicates an expected call of AddPersons.
-func (mr *MockPersonRepoMockRecorder) AddPersons(arg0, arg1 interface{}) *gomock.Call {
+// AddPerson indicates an expected call of AddPerson.
+func (mr *MockPersonRepoMockRecorder) AddPerson(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddPersons", reflect.TypeOf((*MockPersonRepo)(nil).AddPersons), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddPerson", reflect.TypeOf((*MockPersonRepo)(nil).AddPerson), arg0, arg1)
 }
 
 // DescribePerson mocks base method.
@@ -78,4 +78,19 @@ func (m *MockPersonRepo) ListPersons(arg0 context.Context, arg1, arg2 uint64) ([
 func (mr *MockPersonRepoMockRecorder) ListPersons(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPersons", reflect.TypeOf((*MockPersonRepo)(nil).ListPersons), arg0, arg1, arg2)
+}
+
+// RemovePerson mocks base method.
+func (m *MockPersonRepo) RemovePerson(arg0 context.Context, arg1 uint64) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemovePerson", arg0, arg1)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RemovePerson indicates an expected call of RemovePerson.
+func (mr *MockPersonRepoMockRecorder) RemovePerson(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemovePerson", reflect.TypeOf((*MockPersonRepo)(nil).RemovePerson), arg0, arg1)
 }
