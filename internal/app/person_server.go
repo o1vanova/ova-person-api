@@ -21,6 +21,8 @@ func RunPersonServer(grpcPort string, dsn string) error {
 	repository := createRepository(dsn)
 	desc.RegisterPersonApiServiceServer(server, NewPersonApi(repository))
 
+	log.Printf("Server is started!!! Port: %v", grpcPort)
+
 	if err := server.Serve(listen); err != nil {
 		log.Printf("failed to serve: %v", err)
 		log.Fatal()
