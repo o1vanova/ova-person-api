@@ -1,6 +1,7 @@
 package saver
 
 import (
+	"context"
 	"log"
 	"sync"
 	"time"
@@ -17,7 +18,7 @@ type Saver interface {
 type saveJob struct {
 	mtxBuffer *sync.Mutex
 	buffer    []models.Person
-	capacity  uint
+	ctx       context.Context
 	flusher   flusher.Flusher
 	channel   chan models.Person
 	ticker    time.Ticker
@@ -28,6 +29,7 @@ func NewSaver(
 	capacity uint,
 	flusher flusher.Flusher,
 	tick uint,
+	ctx context.Context,
 ) Saver {
 	if tick == 0 {
 		panic("Time must be more than zero")
@@ -37,13 +39,13 @@ func NewSaver(
 	job := saveJob{
 		mtxBuffer: new(sync.Mutex),
 		buffer:    make([]models.Person, capacity),
-		capacity:  capacity,
+		ctx:       ctx,
 		flusher:   flusher,
 		channel:   make(chan models.Person),
 		ticker:    *ticker,
 	}
 
-	go job.init()
+	go job.init(ctx)
 	return &job
 }
 
@@ -55,24 +57,24 @@ func (job *saveJob) Close() {
 	log.Println("User wants to close")
 	job.ticker.Stop()
 	close(job.channel)
-	job.saveInStorage()
 }
 
 func (job *saveJob) Save(person models.Person) {
 	log.Println("User wants to save person: ", person.String())
-	if job.isBuffLocked() {
-		job.saveInStorage()
-	}
-	job.saveInCash(person)
+	job.channel <- person
 }
 
-func (job *saveJob) init() {
+func (job *saveJob) init(ctx context.Context) {
 	for {
 		select {
 		case result := <-job.GetChanelReadOnly():
 			job.saveInCash(result)
+
+		case <-ctx.Done():
+			job.saveInStorage(ctx)
+			return
 		case <-job.ticker.C:
-			job.saveInStorage()
+			job.saveInStorage(ctx)
 		}
 	}
 }
@@ -86,7 +88,7 @@ func (job *saveJob) saveInCash(person models.Person) {
 	}
 }
 
-func (job *saveJob) saveInStorage() {
+func (job *saveJob) saveInStorage(ctx context.Context) {
 	job.mtxBuffer.Lock()
 	defer job.mtxBuffer.Unlock()
 
@@ -94,7 +96,7 @@ func (job *saveJob) saveInStorage() {
 		return
 	}
 
-	unsavedPersons := job.flusher.Flush(job.buffer)
+	unsavedPersons := job.flusher.Flush(ctx, job.buffer)
 	if len(unsavedPersons) == 0 {
 		job.buffer = nil
 	} else {

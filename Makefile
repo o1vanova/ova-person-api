@@ -7,6 +7,7 @@ PROJECT_NAME = ova-person-api
 ## install dependencies
 install-go-deps:
 	@echo "Installing dependencies..."
+	@go get -u github.com/envoyproxy/protoc-gen-validate
 	@go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 	@go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 	@go get -u github.com/golang/protobuf/proto
@@ -14,12 +15,12 @@ install-go-deps:
 	@go get -u google.golang.org/grpc
 	@go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	@go get -u github.com/golang/mock
+	@go get -u github.com/golang/mock/mockgen/model
 	@go get -u github.com/onsi/ginkgo
 	@go get -u github.com/onsi/gomega
 	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 	@go install github.com/golang/protobuf/protoc-gen-go
 	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
-	@go mod download
 
 .PHONY: generate
 ## generate proto files
@@ -28,8 +29,9 @@ generate:
 	@protoc -I $(CURDIR)/api \
 		--go_out=$(CURDIR)/pkg --go_opt=paths=source_relative \
         --go-grpc_out=$(CURDIR)/pkg --go-grpc_opt=paths=source_relative \
-        --grpc-gateway_out=$(CURDIR)/pkg --grpc-gateway_opt paths=source_relative \
+        --grpc-gateway_out=$(CURDIR)/pkg --grpc-gateway_opt=logtostderr=true --grpc-gateway_opt=paths=import \
         $(CURDIR)/api/*.proto
+	@go generate internal/mockgen.go
 
 .PHONY: build
 ## build: build the application
