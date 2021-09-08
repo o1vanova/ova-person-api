@@ -8,6 +8,8 @@ import (
 	"path"
 	"path/filepath"
 	"runtime"
+	"strings"
+	"text/template"
 )
 
 // OpenAndCloseFileInLoop opens and closes countLoop files
@@ -67,4 +69,14 @@ func GetConfigPath() string {
 	configPath := filepath.Join(configDir, "config.json")
 
 	return configPath
+}
+
+func Format(s string, v interface{}) string {
+	t, b := new(template.Template), new(strings.Builder)
+	err := template.Must(t.Parse(s)).Execute(b, v)
+	if err != nil {
+		log.Fatal(err)
+		return ""
+	}
+	return b.String()
 }

@@ -1,4 +1,4 @@
-package person_service
+package app
 
 import (
 	"context"

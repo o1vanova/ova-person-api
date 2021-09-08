@@ -1,4 +1,4 @@
-package person_service
+package app
 
 import (
 	repo "github.com/ozonva/ova-person-api/internal/repo"
