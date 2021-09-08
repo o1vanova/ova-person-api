@@ -24,25 +24,25 @@ func main() {
 	fmt.Println("Server is starting...")
 
 	grpcPort := format(`{{index . "host"}}:{{index . "port"}}`, set)
-	url := format(`{{index . "url"}}`, set)
+	dsn := format(`{{index . "dsn"}}`, set)
 
-	if err := run(grpcPort, url); err != nil {
+	if err := run(grpcPort, dsn); err != nil {
 		log.Err(err)
 		log.Fatal()
 	}
 }
 
-func createRepository(url string) repo.PersonRepo {
-	db, err := sqlx.Connect("pgx", url)
+func createRepository(dsn string) repo.PersonRepo {
+	db, err := sqlx.Open("pgx", dsn)
 	if err != nil {
 		log.Print(err)
 		log.Fatal()
 	}
-	log.Printf("Connection with db %v is successful", url)
+	log.Printf("Connection with db %v is successful", dsn)
 	return repo.NewContext(*db)
 }
 
-func run(grpcPort string, url string) error {
+func run(grpcPort string, dsn string) error {
 	listen, err := net.Listen("tcp", grpcPort)
 	if err != nil {
 		log.Printf("failed to listen: %v", err)
@@ -50,7 +50,7 @@ func run(grpcPort string, url string) error {
 	}
 
 	server := grpc.NewServer()
-	repository := createRepository(url)
+	repository := createRepository(dsn)
 	desc.RegisterPersonApiServiceServer(server, app.NewPersonApi(repository))
 
 	if err := server.Serve(listen); err != nil {

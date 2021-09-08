@@ -66,10 +66,10 @@ func (mr *MockPersonRepoMockRecorder) DescribePerson(arg0, arg1 interface{}) *go
 }
 
 // ListPersons mocks base method.
-func (m *MockPersonRepo) ListPersons(arg0 context.Context, arg1, arg2 uint64) (*[]person.Person, error) {
+func (m *MockPersonRepo) ListPersons(arg0 context.Context, arg1, arg2 uint64) ([]person.Person, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListPersons", arg0, arg1, arg2)
-	ret0, _ := ret[0].(*[]person.Person)
+	ret0, _ := ret[0].([]person.Person)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

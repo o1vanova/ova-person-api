@@ -38,7 +38,7 @@ func (api *PersonApi) ListPersonsPersonV1(ctx context.Context, req *desc.ListPer
 		return nil, err
 	}
 	var result []*desc.CreatePersonRequest
-	for key, person := range *persons {
+	for key, person := range persons {
 		result[key] = mapPersonToDto(&person)
 	}
 	return &desc.ListPersonsResponse{Persons: result}, nil
