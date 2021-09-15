@@ -1,6 +1,7 @@
 package flusher
 
 import (
+	"context"
 	"log"
 
 	models "github.com/ozonva/ova-person-api/internal/models"
@@ -10,15 +11,15 @@ import (
 
 // Flusher - интерфейс для сброса задач в хранилище
 type Flusher interface {
-	Flush(persons []models.Person) []models.Person
+	Flush(ctx context.Context, persons []models.Person) []models.Person
 }
 
 type flusher struct {
 	chunkSize  int
-	personRepo repo.Repo
+	personRepo repo.PersonRepo
 }
 
-func (f flusher) Flush(persons []models.Person) []models.Person {
+func (f flusher) Flush(ctx context.Context, persons []models.Person) []models.Person {
 	if f.chunkSize < 1 {
 		log.Printf("ChunkSize must be positive: %v\n", f.chunkSize)
 		return persons
@@ -27,9 +28,11 @@ func (f flusher) Flush(persons []models.Person) []models.Person {
 
 	var unsaved []models.Person
 	for _, batch := range batches {
-		if result := f.personRepo.AddPersons(batch); result != nil {
-			log.Printf("Error when persons weren't saved: %v\n", result)
-			unsaved = append(unsaved, batch...)
+		for _, person := range batch {
+			if personId, err := f.personRepo.AddPerson(ctx, person); err != nil {
+				log.Printf("Error when persons weren't saved: %v\n", personId)
+				unsaved = append(unsaved, batch...)
+			}
 		}
 	}
 
@@ -43,7 +46,7 @@ func (f flusher) Flush(persons []models.Person) []models.Person {
 // NewFlusher возвращает Flusher с поддержкой батчевого сохранения
 func NewFlusher(
 	chunkSize int,
-	personRepo repo.Repo,
+	personRepo repo.PersonRepo,
 ) Flusher {
 	return &flusher{
 		chunkSize:  chunkSize,

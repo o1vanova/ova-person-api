@@ -7,7 +7,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,10 +18,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PersonApiServiceClient interface {
-	CreatePerson(ctx context.Context, in *CreatePersonRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	DescribePerson(ctx context.Context, in *DescribePersonRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreatePerson(ctx context.Context, in *CreatePersonRequest, opts ...grpc.CallOption) (*CreatePersonResponse, error)
+	DescribePerson(ctx context.Context, in *DescribePersonRequest, opts ...grpc.CallOption) (*DescribePersonResponse, error)
 	ListPersons(ctx context.Context, in *ListPersonsRequest, opts ...grpc.CallOption) (*ListPersonsResponse, error)
-	RemovePerson(ctx context.Context, in *RemovePersonRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	RemovePerson(ctx context.Context, in *RemovePersonRequest, opts ...grpc.CallOption) (*RemovePersonResponse, error)
 }
 
 type personApiServiceClient struct {
@@ -33,8 +32,8 @@ func NewPersonApiServiceClient(cc grpc.ClientConnInterface) PersonApiServiceClie
 	return &personApiServiceClient{cc}
 }
 
-func (c *personApiServiceClient) CreatePerson(ctx context.Context, in *CreatePersonRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *personApiServiceClient) CreatePerson(ctx context.Context, in *CreatePersonRequest, opts ...grpc.CallOption) (*CreatePersonResponse, error) {
+	out := new(CreatePersonResponse)
 	err := c.cc.Invoke(ctx, "/api_pb.PersonApiService/CreatePerson", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -42,8 +41,8 @@ func (c *personApiServiceClient) CreatePerson(ctx context.Context, in *CreatePer
 	return out, nil
 }
 
-func (c *personApiServiceClient) DescribePerson(ctx context.Context, in *DescribePersonRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *personApiServiceClient) DescribePerson(ctx context.Context, in *DescribePersonRequest, opts ...grpc.CallOption) (*DescribePersonResponse, error) {
+	out := new(DescribePersonResponse)
 	err := c.cc.Invoke(ctx, "/api_pb.PersonApiService/DescribePerson", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -60,8 +59,8 @@ func (c *personApiServiceClient) ListPersons(ctx context.Context, in *ListPerson
 	return out, nil
 }
 
-func (c *personApiServiceClient) RemovePerson(ctx context.Context, in *RemovePersonRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *personApiServiceClient) RemovePerson(ctx context.Context, in *RemovePersonRequest, opts ...grpc.CallOption) (*RemovePersonResponse, error) {
+	out := new(RemovePersonResponse)
 	err := c.cc.Invoke(ctx, "/api_pb.PersonApiService/RemovePerson", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -73,10 +72,10 @@ func (c *personApiServiceClient) RemovePerson(ctx context.Context, in *RemovePer
 // All implementations must embed UnimplementedPersonApiServiceServer
 // for forward compatibility
 type PersonApiServiceServer interface {
-	CreatePerson(context.Context, *CreatePersonRequest) (*emptypb.Empty, error)
-	DescribePerson(context.Context, *DescribePersonRequest) (*emptypb.Empty, error)
+	CreatePerson(context.Context, *CreatePersonRequest) (*CreatePersonResponse, error)
+	DescribePerson(context.Context, *DescribePersonRequest) (*DescribePersonResponse, error)
 	ListPersons(context.Context, *ListPersonsRequest) (*ListPersonsResponse, error)
-	RemovePerson(context.Context, *RemovePersonRequest) (*emptypb.Empty, error)
+	RemovePerson(context.Context, *RemovePersonRequest) (*RemovePersonResponse, error)
 	mustEmbedUnimplementedPersonApiServiceServer()
 }
 
@@ -84,16 +83,16 @@ type PersonApiServiceServer interface {
 type UnimplementedPersonApiServiceServer struct {
 }
 
-func (UnimplementedPersonApiServiceServer) CreatePerson(context.Context, *CreatePersonRequest) (*emptypb.Empty, error) {
+func (UnimplementedPersonApiServiceServer) CreatePerson(context.Context, *CreatePersonRequest) (*CreatePersonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePerson not implemented")
 }
-func (UnimplementedPersonApiServiceServer) DescribePerson(context.Context, *DescribePersonRequest) (*emptypb.Empty, error) {
+func (UnimplementedPersonApiServiceServer) DescribePerson(context.Context, *DescribePersonRequest) (*DescribePersonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribePerson not implemented")
 }
 func (UnimplementedPersonApiServiceServer) ListPersons(context.Context, *ListPersonsRequest) (*ListPersonsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListPersons not implemented")
 }
-func (UnimplementedPersonApiServiceServer) RemovePerson(context.Context, *RemovePersonRequest) (*emptypb.Empty, error) {
+func (UnimplementedPersonApiServiceServer) RemovePerson(context.Context, *RemovePersonRequest) (*RemovePersonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemovePerson not implemented")
 }
 func (UnimplementedPersonApiServiceServer) mustEmbedUnimplementedPersonApiServiceServer() {}
